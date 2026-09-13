@@ -1,0 +1,1 @@
+ALTER TABLE `game_settings` ADD `draw_chance` integer DEFAULT 12 NOT NULL;

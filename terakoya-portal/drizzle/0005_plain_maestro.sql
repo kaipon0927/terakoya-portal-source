@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `zodiac_sign` text;

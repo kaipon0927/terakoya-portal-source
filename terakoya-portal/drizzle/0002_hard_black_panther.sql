@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `affiliation` text DEFAULT 'student' NOT NULL;

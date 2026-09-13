@@ -1,0 +1,174 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1787484600729,
+      "tag": "0000_wise_medusa",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1787503379743,
+      "tag": "0001_classy_valeria_richards",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1787504201467,
+      "tag": "0002_hard_black_panther",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1787504354634,
+      "tag": "0003_dusty_black_bolt",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1787505966323,
+      "tag": "0004_tense_toad_men",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1787506210753,
+      "tag": "0005_plain_maestro",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1787542699857,
+      "tag": "0006_rare_prism",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1787545139226,
+      "tag": "0007_retroactive_sorting_bonus",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1787545287225,
+      "tag": "0008_sorting_bonus_awards",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1787552424609,
+      "tag": "0009_left_marvel_apes",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1787553986929,
+      "tag": "0010_typical_jackal",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1787557044460,
+      "tag": "0011_real_roxanne_simpson",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1787579464186,
+      "tag": "0012_wealthy_lake",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1787584966776,
+      "tag": "0013_fair_excalibur",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1787588426925,
+      "tag": "0014_omniscient_gwen_stacy",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "6",
+      "when": 1787620229353,
+      "tag": "0015_pink_texas_twister",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "6",
+      "when": 1787628006931,
+      "tag": "0016_peaceful_hammerhead",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "6",
+      "when": 1787629545053,
+      "tag": "0017_fluffy_wilson_fisk",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "6",
+      "when": 1787630685691,
+      "tag": "0018_shallow_magik",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1787641546812,
+      "tag": "0019_early_pestilence",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "6",
+      "when": 1787645969635,
+      "tag": "0020_tearful_the_executioner",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "6",
+      "when": 1787649931307,
+      "tag": "0021_hot_manta",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "6",
+      "when": 1787656428540,
+      "tag": "0022_next_argent",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "6",
+      "when": 1787816932592,
+      "tag": "0023_public_black_crow",
+      "breakpoints": true
+    }
+  ]
+}
