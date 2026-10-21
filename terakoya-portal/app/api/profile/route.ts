@@ -3,7 +3,8 @@ import { env } from "cloudflare:workers";
 import { getChatGPTUser } from "../../chatgpt-auth";
 import { validateJsonMutation } from "../../api-security";
 import { getDb } from "../../../db";
-import { users } from "../../../db/schema";
+import { accessSettings, users } from "../../../db/schema";
+import { hashJoinCode, normalizeJoinCode } from "../../join-code";
 
 export async function POST(request: Request) {
   const invalid = validateJsonMutation(request); if (invalid) return invalid;
@@ -38,6 +39,15 @@ export async function POST(request: Request) {
   // A typed university email address is not proof of ownership.
   // New accounts require explicit administrator review; keep existing users' statuses.
   const status = isAdmin ? "approved" : (existing?.status ?? "pending");
+  if (!existing && !isAdmin) {
+    const [setting] = await db.select().from(accessSettings).where(eq(accessSettings.key, "join_code")).limit(1);
+    if (setting?.enabled) {
+      const code = typeof body.joinCode === "string" ? normalizeJoinCode(body.joinCode) : "";
+      if (code.length < 8 || code.length > 48 || await hashJoinCode(code) !== setting.codeHash) {
+        return Response.json({ error: "寺子屋入学コードが正しくありません" }, { status: 403 });
+      }
+    }
+  }
   await db
     .insert(users)
     .values({
