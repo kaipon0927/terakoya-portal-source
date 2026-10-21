@@ -32,6 +32,11 @@ export async function POST(request: Request) {
   if (existing && slackName !== existing.slackName) {
     return Response.json({ error: "Slack名は初回登録後に変更できません。修正が必要な場合は総代へ連絡してください" }, { status: 403 });
   }
+  // Prevent account holders from silently changing the claimed university identity.
+  // Existing email/affiliation changes need an administrator-mediated verification flow.
+  if (existing && (zenEmail !== existing.zenEmail || affiliation !== existing.affiliation)) {
+    return Response.json({ error: "大学メールアドレス・区分の変更は総代へ相談してください" }, { status: 403 });
+  }
   const [duplicateEmail] = await db.select({ id: users.id }).from(users).where(and(eq(users.zenEmail, zenEmail), ne(users.chatgptEmail, identity.email))).limit(1);
   if (duplicateEmail) return Response.json({ error: "この大学メールは別のアカウントで登録済みです。総代へ確認してください" }, { status: 409 });
   const adminEmail = (env as unknown as { ADMIN_EMAIL?: string }).ADMIN_EMAIL?.trim().toLowerCase();
