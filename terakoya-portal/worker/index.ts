@@ -29,8 +29,7 @@ function protectResponse(response: Response, isApi: boolean): Response {
   const headers = new Headers(response.headers);
   headers.set("X-Content-Type-Options", "nosniff");
   headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  headers.set("X-Frame-Options", "DENY");
-  headers.set("Content-Security-Policy", "frame-ancestors 'none'");
+  // Do not set frame-ancestors/X-Frame-Options until Sites embedding behavior is verified.
   if (isApi) {
     // API responses include account details and must not be cached by shared proxies.
     headers.set("Cache-Control", "private, no-store");
