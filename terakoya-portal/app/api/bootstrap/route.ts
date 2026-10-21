@@ -27,10 +27,6 @@ export async function GET() {
     await db.update(users).set({ status: "approved", role: "admin", house: profile.house ?? "勇往邁進" }).where(eq(users.chatgptEmail, identity.email));
     [profile] = await db.select().from(users).where(eq(users.chatgptEmail, identity.email)).limit(1);
   }
-  if (profile?.status === "pending") {
-    await db.update(users).set({ status: "approved" }).where(eq(users.chatgptEmail, identity.email));
-    [profile] = await db.select().from(users).where(eq(users.chatgptEmail, identity.email)).limit(1);
-  }
   if (profile?.role === "admin" && profile.status === "approved") {
     const marker = await env.DB.prepare("INSERT OR IGNORE INTO access_settings (key, code_hash, code_hint, enabled) VALUES ('founder_bonus_30000_v1', 'one-time-grant', '総代特別支給済み', 0)").run();
     if (Number(marker.meta.changes ?? 0) > 0) {
@@ -39,10 +35,6 @@ export async function GET() {
         db.update(users).set({ pon: sql`${users.pon} + 30000` }).where(eq(users.chatgptEmail, identity.email)),
       ]);
       [profile] = await db.select().from(users).where(eq(users.chatgptEmail, identity.email)).limit(1);
-    }
-    const monitorApproval = await env.DB.prepare("INSERT OR IGNORE INTO access_settings (key, code_hash, code_hint, enabled) VALUES ('initial_monitor_approval_v1', 'one-time-approval', '初回モニター承認済み', 0)").run();
-    if (Number(monitorApproval.meta.changes ?? 0) > 0) {
-      await db.update(users).set({ status: "approved" }).where(eq(users.status, "pending"));
     }
   }
   let dailyBonus = 0;
