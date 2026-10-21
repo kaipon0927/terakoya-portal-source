@@ -37,6 +37,25 @@ export async function GET() {
       [profile] = await db.select().from(users).where(eq(users.chatgptEmail, identity.email)).limit(1);
     }
   }
+  // Pending members must not receive member-only survey or community data.
+  if (profile && profile.status !== "approved") {
+    return Response.json({
+      identity: { email: identity.email, displayName: identity.displayName },
+      profile,
+      dailyBonus: 0,
+      joinCodeRequired: false,
+      courses: [],
+      ratingPeriods: {},
+      gradePeriods: {},
+      requests: [],
+      ponHistory: [],
+      messages: [],
+      houseTotals: [],
+      rankings: [],
+      surveyDetails: [],
+      gradeSurveyDetails: [],
+    });
+  }
   let dailyBonus = 0;
   if (profile?.status === "approved") {
     const rewardDate = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
