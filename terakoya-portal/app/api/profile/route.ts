@@ -35,8 +35,9 @@ export async function POST(request: Request) {
   if (duplicateEmail) return Response.json({ error: "この大学メールは別のアカウントで登録済みです。総代へ確認してください" }, { status: 409 });
   const adminEmail = (env as unknown as { ADMIN_EMAIL?: string }).ADMIN_EMAIL?.trim().toLowerCase();
   const isAdmin = Boolean(adminEmail && identity.email.toLowerCase() === adminEmail);
-  const canAutoApprove = existing?.status !== "suspended" && existing?.status !== "rejected";
-  const status = isAdmin || canAutoApprove ? "approved" : "pending";
+  // A typed university email address is not proof of ownership.
+  // New accounts require explicit administrator review; keep existing users' statuses.
+  const status = isAdmin ? "approved" : (existing?.status ?? "pending");
   await db
     .insert(users)
     .values({
@@ -60,7 +61,7 @@ export async function POST(request: Request) {
         affiliation,
         avatarStyle,
         avatarAccent,
-        ...(isAdmin ? { status: "approved", role: "admin", house: "勇往邁進" } : canAutoApprove ? { status: "approved" } : {}),
+        ...(isAdmin ? { status: "approved", role: "admin", house: "勇往邁進" } : {}),
       },
     });
   const [profile] = await db.select().from(users).where(eq(users.chatgptEmail, identity.email)).limit(1);
