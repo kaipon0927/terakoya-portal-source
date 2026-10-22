@@ -3,7 +3,8 @@ import { env } from "cloudflare:workers";
 import { getChatGPTUser } from "../../chatgpt-auth";
 import { validateJsonMutation } from "../../api-security";
 import { getDb } from "../../../db";
-import { users } from "../../../db/schema";
+import { accessSettings, users } from "../../../db/schema";
+import { hashJoinCode, normalizeJoinCode } from "../../join-code";
 
 export async function POST(request: Request) {
   const invalid = validateJsonMutation(request); if (invalid) return invalid;
@@ -31,12 +32,27 @@ export async function POST(request: Request) {
   if (existing && slackName !== existing.slackName) {
     return Response.json({ error: "Slack名は初回登録後に変更できません。修正が必要な場合は総代へ連絡してください" }, { status: 403 });
   }
+  // Prevent account holders from silently changing the claimed university identity.
+  // Existing email/affiliation changes need an administrator-mediated verification flow.
+  if (existing && (zenEmail !== existing.zenEmail || affiliation !== existing.affiliation)) {
+    return Response.json({ error: "大学メールアドレス・区分の変更は総代へ相談してください" }, { status: 403 });
+  }
   const [duplicateEmail] = await db.select({ id: users.id }).from(users).where(and(eq(users.zenEmail, zenEmail), ne(users.chatgptEmail, identity.email))).limit(1);
   if (duplicateEmail) return Response.json({ error: "この大学メールは別のアカウントで登録済みです。総代へ確認してください" }, { status: 409 });
   const adminEmail = (env as unknown as { ADMIN_EMAIL?: string }).ADMIN_EMAIL?.trim().toLowerCase();
   const isAdmin = Boolean(adminEmail && identity.email.toLowerCase() === adminEmail);
-  const canAutoApprove = existing?.status !== "suspended" && existing?.status !== "rejected";
-  const status = isAdmin || canAutoApprove ? "approved" : "pending";
+  // A typed university email address is not proof of ownership.
+  // New accounts require explicit administrator review; keep existing users' statuses.
+  const status = isAdmin ? "approved" : (existing?.status ?? "pending");
+  if (!existing && !isAdmin) {
+    const [setting] = await db.select().from(accessSettings).where(eq(accessSettings.key, "join_code")).limit(1);
+    if (setting?.enabled) {
+      const code = typeof body.joinCode === "string" ? normalizeJoinCode(body.joinCode) : "";
+      if (code.length < 8 || code.length > 48 || await hashJoinCode(code) !== setting.codeHash) {
+        return Response.json({ error: "寺子屋入学コードが正しくありません" }, { status: 403 });
+      }
+    }
+  }
   await db
     .insert(users)
     .values({
@@ -60,7 +76,7 @@ export async function POST(request: Request) {
         affiliation,
         avatarStyle,
         avatarAccent,
-        ...(isAdmin ? { status: "approved", role: "admin", house: "勇往邁進" } : canAutoApprove ? { status: "approved" } : {}),
+        ...(isAdmin ? { status: "approved", role: "admin", house: "勇往邁進" } : {}),
       },
     });
   const [profile] = await db.select().from(users).where(eq(users.chatgptEmail, identity.email)).limit(1);
